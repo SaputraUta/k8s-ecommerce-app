@@ -1,5 +1,7 @@
 # Define a dedicated namespace for all e-commerce microservices
-apiVersion: v1              # Core API group version
-kind: Namespace             # Namespace object
+apiVersion: v1               # Core API version for Kubernetes objects
+kind: Namespace              # Declare this object as a Namespace
 metadata:
-  name: ecommerce           # Name of the namespace to isolate resources
+  name: ecommerce            # Set the namespace name to 'ecommerce'
+  labels:                    # Define labels for this namespace
+    istio-injection: enabled # Enable automatic sidecar (Envoy proxy) injection by Istio

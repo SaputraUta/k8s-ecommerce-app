@@ -31,7 +31,7 @@ spec:
   selector:
     app: rabbitmq              # Select pods with this label
   ports:
-    - name: amqp               # Name the AMQP port
+    - name: tcp               # Name the AMQP port
       port: 5672               # Externally visible port
       targetPort: 5672         # Port inside the container
     - name: http               # Name the HTTP port

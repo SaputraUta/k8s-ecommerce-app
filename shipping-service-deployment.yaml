@@ -35,5 +35,6 @@ spec:
   selector:
     app: shipping-service      # Select pods with this label
   ports:
-    - port: 3001               # Port to expose
+    - name: http               # Name the port
+      port: 3001               # Port to expose
       targetPort: 3001         # Map to container port
