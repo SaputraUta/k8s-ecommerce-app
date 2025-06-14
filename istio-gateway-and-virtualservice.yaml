@@ -1,0 +1,37 @@
+# Istio Gateway to expose HTTP traffic
+apiVersion: networking.istio.io/v1beta1  # Istio API group
+kind: Gateway                           # Gateway object
+metadata:
+  name: ecommerce-gateway               # Gateway name
+  namespace: ecommerce                  # Deploy in ecommerce namespace
+spec:
+  selector:
+    istio: ingressgateway               # Use Istio ingress gateway instance
+  servers:
+  - port:
+      number: 80                        # Listen on HTTP port 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - "*"                               # Accept requests from any host
+---
+# VirtualService to route requests to order-service
+apiVersion: networking.istio.io/v1beta1  # Istio API version
+kind: VirtualService                     # Defines traffic routing
+metadata:
+  name: order-service                   # Name of virtual service
+  namespace: ecommerce                  # Same namespace
+spec:
+  hosts:
+  - "*"                                 # Accept requests for any host
+  gateways:
+  - ecommerce-gateway                   # Use defined Gateway
+  http:
+  - match:
+    - uri:
+        exact: /order                   # Only match path /order
+    route:
+    - destination:
+        host: order-service            # Forward to order-service
+        port:
+          number: 3000                 # Port as defined in its Service

@@ -1,0 +1,39 @@
+# Deployment and Service for order-service
+apiVersion: apps/v1            # Use apps/v1
+kind: Deployment               # Deployment type
+metadata:
+  name: order-service          # Name of the deployment
+  namespace: ecommerce         # Namespace where it runs
+spec:
+  replicas: 1                  # One instance
+  selector:
+    matchLabels:
+      app: order-service       # Label selector for pods
+  template:
+    metadata:
+      labels:
+        app: order-service     # Label on pods
+    spec:
+      containers:
+      - name: order-service    # Container name
+        image: ghcr.io/saputrauta/order-service:latest  # GitHub Packages image
+        ports:
+        - containerPort: 3000  # App listens on port 3000
+        env:
+        - name: PORT
+          value: "3000"        # Match .env definition
+        - name: AMQP_URL
+          value: "amqp://rabbitmq:5672"  # Pointing to RabbitMQ service
+---
+# Expose order-service within the cluster
+apiVersion: v1                 # Core API
+kind: Service                  # Service type
+metadata:
+  name: order-service          # Name of service
+  namespace: ecommerce         # Same namespace
+spec:
+  selector:
+    app: order-service         # Select matching pods
+  ports:
+    - port: 3000               # Port to expose
+      targetPort: 3000         # Container port

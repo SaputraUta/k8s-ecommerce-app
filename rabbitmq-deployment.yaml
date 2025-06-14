@@ -1,0 +1,39 @@
+# Deployment for RabbitMQ message broker
+apiVersion: apps/v1            # Use apps/v1 for deployments
+kind: Deployment               # Deployment resource type
+metadata:
+  name: rabbitmq               # Name of the deployment
+  namespace: ecommerce         # Deploy into the ecommerce namespace
+spec:
+  replicas: 1                  # Single replica
+  selector:
+    matchLabels:
+      app: rabbitmq            # Label selector for pods
+  template:
+    metadata:
+      labels:
+        app: rabbitmq          # Apply label to pods
+    spec:
+      containers:
+      - name: rabbitmq         # Container name
+        image: rabbitmq:3.11-management  # Rabbit image
+        ports:
+        - containerPort: 5672  # AMQP protocol port
+        - containerPort: 15672 # Management UI HTTP port
+---
+# Service to expose RabbitMQ internally
+apiVersion: v1                 # Core API group for service
+kind: Service                  # Service resource type
+metadata:
+  name: rabbitmq               # Name of the service
+  namespace: ecommerce         # Same namespace as deployment
+spec:
+  selector:
+    app: rabbitmq              # Select pods with this label
+  ports:
+    - name: amqp               # Name the AMQP port
+      port: 5672               # Externally visible port
+      targetPort: 5672         # Port inside the container
+    - name: http               # Name the HTTP port
+      port: 15672              # Externally visible port
+      targetPort: 15672        # Port inside container for UI
