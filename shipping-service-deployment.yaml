@@ -13,6 +13,8 @@ spec:
     metadata:
       labels:
         app: shipping-service  # Label on pods
+      annotations:
+        sidecar.istio.io/inject: "false" # Disable Istio injection
     spec:
       containers:
       - name: shipping-service # Container name
